@@ -1,0 +1,128 @@
+/* Updated Variables for Dark Mode */
+:root{
+  --bg:#0a0a0a;
+  --surface:#161618;
+  --text:#f4f4f4;
+  --muted:#a1a1a1;
+  --accent:#ffffff;
+  --border:#2a2a2c;
+  --container:1100px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Inter,system-ui,Arial,Helvetica,sans-serif;color:var(--text);background:var(--bg);line-height:1.5}
+.container{max-width:var(--container);margin:0 auto;padding:2rem}
+
+/* Header */
+.site-header{background:var(--bg);border-bottom:1px solid var(--border)}
+.site-header .container{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem}
+.brand{margin:0;font-size:1.25rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05rem}
+.site-nav a{margin-left:1rem;color:var(--muted);text-decoration:none}
+.site-nav a[aria-current]{color:var(--accent);font-weight:600}
+
+/* Hero Section */
+.hero{padding:3rem 0;background:linear-gradient(180deg, #111111, var(--bg))}
+.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center}
+.hero-text h2{margin:0 0 .5rem;font-size:2rem}
+.lead{color:var(--muted);margin-top:0}
+.hero-image img{width:100%;height:auto;border-radius:8px;display:block}
+
+/* High Contrast Button Styles */
+.hero-cta .btn{
+  display:inline-block;
+  padding:0.8rem 1.5rem;
+  border-radius:4px;
+  background:var(--accent);
+  color:#000;
+  text-decoration:none;
+  font-weight:600;
+  font-size:0.85rem;
+  text-transform:uppercase;
+  margin-right:.5rem;
+  transition:transform 0.2s ease;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-outline{
+  background:transparent !important;
+  color:var(--accent) !important;
+  border:1px solid var(--accent);
+}
+
+.featured h3{margin-top:0}
+.grid{display:flex;gap:1rem}
+.grid a img{width:100%;height:220px;object-fit:cover;border-radius:6px}
+.grid a{flex:1}
+
+/* Gallery grid sizing - Reverted */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+.gallery a img{width:100%;height:220px;object-fit:cover;border-radius:6px;display:block}
+
+.about .bio{margin-top:1rem}
+.skills ul{padding-left:1.25rem}
+
+/* Footer */
+.site-footer{padding:1.5rem 0;border-top:1px solid var(--border);background:var(--bg);margin-top:2rem}
+.site-footer p{margin:0;color:var(--muted)}
+.site-footer .container{display:flex;justify-content:space-between;align-items:center}
+.footer-left{font-weight:600}
+.footer-right a{color:var(--accent);text-decoration:none}
+
+/* Index nav on portfolio */
+.index-nav{display:flex;gap:1rem;padding:.5rem 0 1rem}
+.index-nav a{color:var(--accent);text-decoration:none;padding:.35rem .6rem;border-radius:6px;background:rgba(255,255,255,0.08)}
+
+/* Center Portfolio title, lead, and index nav on portfolio page */
+.portfolio-page main > h2{ text-align:center; margin:0 0 .25rem }
+.portfolio-page .lead{ text-align:center; margin-bottom:0.5rem }
+.portfolio-page .index-nav{ justify-content:center }
+.portfolio-page .index-nav a{ margin:0 .35rem }
+
+/* Section card styling for portfolio/category blocks */
+.category{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);padding:1rem;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.55)}
+.category h3{margin:0 0 .5rem;font-size:1.1rem;text-align:center}
+.category p{color:var(--muted);margin:0}
+.section-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-top:0.75rem}
+@media (max-width:700px){
+  .section-grid{grid-template-columns:1fr}
+}
+
+/* Photo rows */
+.photo-row{display:flex;gap:1rem;margin-top:1rem}
+.photo-item{flex:1;display:block;overflow:visible}
+.photo-item img{width:100%;height:auto;display:block;border-radius:6px;position:relative}
+
+/* Performance-optimized image animations */
+/* Removed global will-change to save memory */
+img{transition:transform .2s;transform-origin:center center}
+img:hover{transform:scale(1.1)}
+
+/* Portfolio Layout - Reverted */
+.portfolio-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+.left-col{display:flex;flex-direction:column;gap:2rem}
+.right-col{display:flex;flex-direction:column;align-items:stretch;gap:2rem}
+
+.small-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.small-row .photo-item img{width:100%;height:auto;display:block;border-radius:6px}
+
+.masonry-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:8px;gap:1rem}
+.masonry-item{display:block}
+.masonry-item img{width:100%;height:auto;border-radius:6px;display:block}
+.masonry-item2{grid-column:span 2}
+.masonry-item2 img{width:100%;height:auto;border-radius:6px;display:block}
+
+/* About page two-column layout */
+.about.two-col{display:grid;grid-template-columns:1fr 360px;gap:2rem;align-items:start;grid-template-areas:"left right"}
+.about-left{grid-area:left}
+.about-right{grid-area:right}
+.about-right img{width:100%;height:auto;border-radius:8px;display:block}
+
+
+@media (max-width:1100px){
+  .portfolio-layout{grid-template-columns:1fr}
+}
+@media (max-width:900px){
+  .about.two-col{grid-template-columns:1fr;grid-template-areas:"left" "right"}
+  /* cap the about image height so it doesn't fill the viewport */
+  .about-right img{width:100%;height:auto;max-height:45vh;object-fit:cover;border-radius:8px;display:block}
+  .gallery{grid-template-columns:repeat(2,1fr)}
+}
