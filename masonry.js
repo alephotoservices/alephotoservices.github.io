@@ -1,69 +1,60 @@
-// masonry.js — optimized to prevent layout thrashing
-(function(){
+(function() {
   'use strict';
 
-  function raf(cb){ return (window.requestAnimationFrame || function(fn){ return setTimeout(fn,16); })(cb); }
-
-  function debounce(func, wait){
-    let t = null;
-    return function(){
-      const ctx = this, args = arguments;
-      clearTimeout(t);
-      t = setTimeout(function(){ func.apply(ctx, args); }, wait);
+  // Debounce function to limit how often relayout can run
+  const debounce = (func, delay) => {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), delay);
     };
-  }
+  };
 
-  function init(){
-    const grids = Array.from(document.querySelectorAll('.masonry-grid'));
-    if(!grids.length) return;
+  const relayout = () => {
+    const grids = document.querySelectorAll('.masonry-grid');
+    
+    grids.forEach(grid => {
+      const items = grid.querySelectorAll('.masonry-item, .masonry-item2');
 
-    // cache computed values per grid
-    const gridMeta = grids.map(grid => ({
-      grid,
-      // Cache the items list to avoid querySelectorAll on every relayout
-      items: Array.from(grid.querySelectorAll('.masonry-item, .masonry-item2')), 
-      rowHeight: parseFloat(getComputedStyle(grid).getPropertyValue('grid-auto-rows')) || 8,
-      rowGap: parseFloat(getComputedStyle(grid).getPropertyValue('gap')) || 8
-    }));
+      items.forEach(item => {
+        item.style.gridRowEnd = 'auto';
+        
+        const img = item.querySelector('img');
+        if (!img) return;
 
-    // Moving measurement inside relayout to catch CSS media query changes
-    function relayout(){
-      gridMeta.forEach(({grid, items}) => {
-        const styles = getComputedStyle(grid);
-        const rowHeight = parseFloat(styles.getPropertyValue('grid-auto-rows')) || 8;
-        const rowGap = parseFloat(styles.getPropertyValue('gap')) || 8;
-
-        const updates = items.map(item => {
-          const h = item.firstElementChild.getBoundingClientRect().height;
-          const span = Math.ceil((h + rowGap) / (rowHeight + rowGap));
-          return { item, span };
-        });
-
-        updates.forEach(data => {
-          if(data) data.item.style.gridRowEnd = 'span ' + data.span;
-        });
+        const contentHeight = img.getBoundingClientRect().height;
+        const verticalGap = parseInt(window.getComputedStyle(item).marginBottom);
+        const rowSpan = Math.ceil(contentHeight + verticalGap);
+        
+        item.style.gridRowEnd = `span ${rowSpan}`;
       });
-    }
-
-    const debouncedRelayout = debounce(()=>raf(relayout), 100);
-
-    if(window.ResizeObserver){
-      const obs = new ResizeObserver(debouncedRelayout);
-      gridMeta.forEach(m => obs.observe(m.grid));
-    } else {
-      window.addEventListener('resize', debouncedRelayout);
-    }
-
-    const imgs = document.querySelectorAll('.masonry-grid img');
-    imgs.forEach(img => {
-      // Use 'once' to automatically remove the listener after firing
-      if(img.complete){ debouncedRelayout(); }
-      else img.addEventListener('load', debouncedRelayout, {passive:true, once:true});
     });
+  };
 
-    debouncedRelayout();
+  // Wrapped relayout to prevent CPU spikes
+  const debouncedRelayout = debounce(relayout, 100);
+
+  const handleImages = () => {
+    const images = document.querySelectorAll('.masonry-grid img');
+    images.forEach(img => {
+      if (img.complete) {
+        relayout();
+      } else {
+        img.addEventListener('load', relayout);
+        img.addEventListener('error', relayout);
+      }
+    });
+  };
+
+  // Use the debounced version for the resize event
+  window.addEventListener('resize', debouncedRelayout);
+  
+  if (window.ResizeObserver) {
+    // ResizeObserver also triggers frequently, so we use debounce here as well
+    const ro = new ResizeObserver(debouncedRelayout);
+    document.querySelectorAll('.masonry-grid').forEach(grid => ro.observe(grid));
   }
 
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+  handleImages();
+  relayout();
 })();
